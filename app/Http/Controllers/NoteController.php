@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Note;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class NoteController extends Controller
+{
+    public function index(){
+
+        $notes = Note::orderBy('id', 'DESC')->get();
+        return view('notes.index', compact('notes'));
+    }
+
+    public function create(){
+        return view('notes.create');
+    }
+
+    public function store(Request $request){
+      
+        $request->validate([
+            'content' => 'required|string',
+       
+        ]);
+
+       Note::create([
+            'content' => $request->content,
+            'user_id' => Auth::user()->id,
+          
+
+        ]);
+
+        return redirect(route('notes.index'));
+    }
+}
